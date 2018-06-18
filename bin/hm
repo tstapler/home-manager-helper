@@ -1,4 +1,4 @@
-#!/usr/bin/env zsh
+#!/usr/bin/env sh
 
 NIXCFG_PATH="${NIXCFG_PATH-/nixcfg/home/users}"
 NIXCFG_SECRETS="${NIXCFG_SECRETS-/nixcfg/home/secrets}"
@@ -7,12 +7,12 @@ NIXCFG_SECRETS="${NIXCFG_SECRETS-/nixcfg/home/secrets}"
 RED='\033[0;31m'
 NC='\033[0m' # No Color
 
-function wait-any-key {
+wait_any_key() {
     echo 'Press any key to continue...'; read -k1 -s
     echo ""
 }
 
-function quit-with-help {
+quit_with_help() {
     cat << EOF
 usage: hm <command> <env>
 
@@ -31,32 +31,34 @@ EOF
     exit 0
 }
 
-function execute {
+execute() {
     # No argument, show help
-    if [[ $# -ne 1 ]] ; then
-        quit-with-help;
+    if [ $# -ne 1 ] ; then
+        quit_with_help;
     fi
 
-    local envfile="$NIXCFG_PATH/$1.nix"
+    envfile="$NIXCFG_PATH/$1.nix"
 
     # envfile doesn't exist, complain
-    if [ ! -e $envfile ]; then
+    if [ ! -e "$envfile" ]; then
         echo "Envfile not found: $envfile"
         exit 0
     fi
 
     # pull in user's secrets
-    source "$NIXCFG_SECRETS"
+    if [ -f "$NIXCFG_SECRETS" ]; then
+        source "$NIXCFG_SECRETS"
+    fi
 
-    @home-manager@ -v -f $envfile $command
+    @home-manager@ -v -f "$envfile" "$command"
 }
 
 # no arguments, show help
-if [[ $# -eq 0 ]] ; then
-    quit-with-help
+if [ $# -eq 0 ] ; then
+    quit_with_help
 fi
 
-local command="$1"; shift
+command="$1"; shift
 
 case "$command" in
     build)  execute "$@";;
