@@ -7,6 +7,7 @@ pkgs.stdenv.mkDerivation {
   installPhase = ''
     mkdir -p $out/bin
     substitute ${./bin/hm} $out/bin/hm --replace @homeManager@ ${pkgs.home-manager}/bin/home-manager
+    chmod +x $out/bin/hm
     cat "$out/bin/hm"
   '';
 
