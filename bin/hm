@@ -50,7 +50,7 @@ execute() {
         source "$NIXCFG_SECRETS"
     fi
 
-    @home-manager@ -v -f "$envfile" "$command"
+    @homeManager@ -v -f "$envfile" "$command"
 }
 
 # no arguments, show help
